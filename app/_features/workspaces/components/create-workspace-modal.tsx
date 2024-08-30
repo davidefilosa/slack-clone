@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/use-create-workspace";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const CreateWorkspaceModal = () => {
   const router = useRouter();
@@ -33,11 +34,13 @@ export const CreateWorkspaceModal = () => {
         { name },
         {
           onSuccess(data) {
-            setOpen(false);
+            handleClose();
             router.push(`/workspace/${data}`);
+            toast.success("Workspace created");
           },
           onError() {
             console.log("error");
+            toast.error("Failed to create workspace");
           },
           onSettled() {},
         }
