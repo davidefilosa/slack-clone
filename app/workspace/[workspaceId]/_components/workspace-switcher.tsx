@@ -26,7 +26,7 @@ export const WorkspaceSwitcher = () => {
   const [open, setOpen] = useCreateWorkspaceModal();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button className="size-9 relative overflow-hidden bg-[#ABABAD] hover:bg-[#ABABAD]/80 text-slate-800 font-semibold text-xl">
           {workspaceLoading ? (
             <Loader className="size-5 shrink-0 animate-spin" />
@@ -49,18 +49,18 @@ export const WorkspaceSwitcher = () => {
         {filteredWorkspaces?.map((workspace) => (
           <DropdownMenuItem
             key={workspace._id}
-            className="cursore-pointer capitalize"
+            className="cursor-pointer capitalize"
             onClick={() => router.push(`/workspace/${workspace?._id}`)}
           >
-            <div className="size-9 relative overflow-hidden bg-[#F2F2F2]  text-slate-800 font-semibold text-xl rounded-md flex items-center justify-center mr-2">
+            <div className="shrink-0 size-9 relative overflow-hidden bg-[#616061]  text-white font-semibold text-xl rounded-md flex items-center justify-center mr-2">
               {workspace.name[0].toUpperCase()}
             </div>
-            <div>{workspace.name}</div>
+            <div className="truncate">{workspace.name} Workspace</div>
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursore-pointer capitalize"
+          className="cursor-pointer capitalize"
           onClick={() => setOpen(true)}
         >
           <div className="size-9 relative overflow-hidden bg-[#F2F2F2] text-slate-800 font-semibold text-xl rounded-md flex items-center justify-center mr-2">
