@@ -72,7 +72,11 @@ export const WorkspaceSidebar = () => {
           />
         ))}
       </ChannelSection>
-      <ChannelSection label="Direct messages" hint="Open a direct message">
+      <ChannelSection
+        label="Direct messages"
+        hint="Open a direct message"
+        onNew={() => {}}
+      >
         {members?.map((item) => (
           <UserItem
             key={item._id}

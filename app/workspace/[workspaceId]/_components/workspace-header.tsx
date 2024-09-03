@@ -19,6 +19,8 @@ import {
 import { Hint } from "@/components/hint";
 import { usePreferenceModal } from "@/app/_features/workspaces/store/use-preference-modal";
 import { PreferenceModal } from "./preference-modal";
+import { InviteModal } from "./invite-modal";
+import { useState } from "react";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -30,10 +32,16 @@ export const WorkspaceHeader = ({
   isAdmin,
 }: WorkspaceHeaderProps) => {
   const [open, setOpen] = usePreferenceModal();
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   return (
     <>
       <PreferenceModal workspace={workspace} />
+      <InviteModal
+        open={inviteOpen}
+        setOpen={setInviteOpen}
+        workspace={workspace}
+      />
       <div className="flex items-center justify-between h-[49px] gap-0.5 px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -61,7 +69,10 @@ export const WorkspaceHeader = ({
             {isAdmin && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer py-2">
+                <DropdownMenuItem
+                  className="cursor-pointer py-2"
+                  onClick={() => setInviteOpen(true)}
+                >
                   Invite people to {workspace.name}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

@@ -30,6 +30,11 @@ export const CreateChannelModal = () => {
   const { mutate, data, isError, isSettled, isSuccess, isPending, error } =
     useCreateChannel();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
+    setName(value);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -65,7 +70,7 @@ export const CreateChannelModal = () => {
             autoFocus
             minLength={3}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => handleChange(e)}
           />
 
           <div className="flex justify-end">

@@ -17,13 +17,15 @@ export const create = mutation({
       )
       .unique();
 
-    if (!member) {
+    if (!member || member.role !== "admin") {
       throw new Error("Unauthorized");
     }
 
+    const parsedName = args.name.replace(/\s+/g, "-").toLowerCase();
+
     const channelId = await ctx.db.insert("channels", {
       workspaceId: args.workspaceId,
-      name: args.name,
+      name: parsedName,
     });
 
     return channelId;
