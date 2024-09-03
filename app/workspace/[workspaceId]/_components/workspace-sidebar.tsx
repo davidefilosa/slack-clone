@@ -3,8 +3,19 @@
 import { useCurrentMember } from "@/app/_features/members/api/use-current-member";
 import { useGetWorkspaceById } from "@/app/_features/workspaces/api/use-get-workspace-by-id";
 import { useWorkspaceId } from "@/hooks/use-workspaceId";
-import { AlertTriangle, Loader } from "lucide-react";
+import {
+  AlertTriangle,
+  HashIcon,
+  Loader,
+  MessageSquareText,
+  SendHorizonal,
+} from "lucide-react";
 import { WorkspaceHeader } from "./workspace-header";
+import { SidebarItem } from "./sidebar-item";
+import { useGetChannels } from "@/app/_features/channels/api/use-get-channels";
+import { ChannelSection } from "./channel-sections";
+import { useGetMembers } from "@/app/_features/members/api/use-get-members";
+import { UserItem } from "./user-item";
 
 export const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
@@ -13,6 +24,12 @@ export const WorkspaceSidebar = () => {
 
   const { data: workspace, isLoading: isLoadingWorkspace } =
     useGetWorkspaceById(workspaceId);
+
+  const { data: channels, isLoading: isLoadingChannels } =
+    useGetChannels(workspaceId);
+
+  const { data: members, isLoading: isLoadingMembers } =
+    useGetMembers(workspaceId);
 
   if (isLoadingMember || isLoadingWorkspace)
     return (
@@ -34,6 +51,34 @@ export const WorkspaceSidebar = () => {
         workspace={workspace}
         isAdmin={member.role === "admin"}
       />
+      <div className="flex flex-col px-2 mt-3">
+        <SidebarItem label="Threads" icon={MessageSquareText} id="threads" />
+        <SidebarItem label="Draft & Sent" icon={SendHorizonal} id="draft" />
+      </div>
+      <ChannelSection label="Channels" hint="New channel" onNew={() => {}}>
+        {channels?.map((item) => (
+          <SidebarItem
+            key={item._id}
+            icon={HashIcon}
+            label={item.name}
+            id={item.name}
+          />
+        ))}
+      </ChannelSection>
+      <ChannelSection
+        label="Direct messages"
+        hint="Open a direct message"
+        onNew={() => {}}
+      >
+        {members?.map((item) => (
+          <UserItem
+            key={item._id}
+            id={item.user._id}
+            image={item.user.image}
+            label={item.user.name}
+          />
+        ))}
+      </ChannelSection>
     </div>
   );
 };

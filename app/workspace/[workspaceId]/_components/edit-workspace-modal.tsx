@@ -2,6 +2,7 @@ import { useUpdateWorkspace } from "@/app/_features/workspaces/api/use-update-wo
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -66,8 +67,15 @@ export default function EditWorkspaceModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <div className="flex justify-end">
-            <Button disabled={isPending}>Save</Button>
+          <div className="flex gap-x-2 justify-end">
+            <DialogClose asChild>
+              <Button disabled={isPending} variant={"outline"} type="button">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button disabled={isPending} type="submit">
+              Save
+            </Button>
           </div>
         </form>
       </DialogContent>

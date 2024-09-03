@@ -1,4 +1,5 @@
 import { useDeleteWorkspace } from "@/app/_features/workspaces/api/use-delete-workspace";
+import { usePreferenceModal } from "@/app/_features/workspaces/store/use-preference-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Id } from "@/convex/_generated/dataModel";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface CancelWorkspaceDialogProps {
@@ -23,9 +26,11 @@ export const CancelWorkspaceDialog = ({
   setOpen,
   workspaceId,
 }: CancelWorkspaceDialogProps) => {
+  const router = useRouter();
   const handleClose = () => {
     setOpen(false);
   };
+  const [preferenceOpen, setpreferenceOpen] = usePreferenceModal();
 
   const { mutate, data, isError, isSettled, isSuccess, isPending, error } =
     useDeleteWorkspace();
@@ -38,6 +43,8 @@ export const CancelWorkspaceDialog = ({
           onSuccess(data) {
             handleClose();
             toast.success("Workspace cancelled");
+            setpreferenceOpen(false);
+            router.replace("/");
           },
           onError() {
             console.log("error");
@@ -60,9 +67,9 @@ export const CancelWorkspaceDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleSubmit()}>
+          <Button variant={"destructive"} onClick={() => handleSubmit()}>
             Continue
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
