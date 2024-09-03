@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateChannelModal } from "@/app/_features/channels/components/create-channel-modal";
 import { CreateWorkspaceModal } from "@/app/_features/workspaces/components/create-workspace-modal";
 import { PreferenceModal } from "@/app/workspace/[workspaceId]/_components/preference-modal";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ export const ModalsProvider = () => {
   return (
     <>
       <CreateWorkspaceModal />
+      <CreateChannelModal />
     </>
   );
 };
