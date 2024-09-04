@@ -68,7 +68,7 @@ export const WorkspaceSidebar = () => {
             key={item._id}
             icon={HashIcon}
             label={item.name}
-            id={item.name}
+            id={item._id}
           />
         ))}
       </ChannelSection>
