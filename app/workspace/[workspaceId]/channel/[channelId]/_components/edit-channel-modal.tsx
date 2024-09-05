@@ -30,6 +30,11 @@ export default function EditChannelModal({
     setOpen(false);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
+    setName(value);
+  };
+
   const { mutate, data, isError, isSettled, isSuccess, isPending, error } =
     useUpdateChannel();
 
@@ -67,7 +72,7 @@ export default function EditChannelModal({
             autoFocus
             minLength={3}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => handleChange(e)}
           />
           <div className="flex gap-x-2 justify-end">
             <DialogClose asChild>
