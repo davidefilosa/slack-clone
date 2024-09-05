@@ -131,6 +131,11 @@ const Editor = ({
     }
   };
 
+  const onEmojiSelect = (emoji: any) => {
+    const quill = quillRef.current;
+    quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
+  };
+
   const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 
   return (
@@ -152,13 +157,8 @@ const Editor = ({
               <PiTextAa className="size-4" />
             </Button>
           </Hint>
-          <EmojiPopover onEmojiSelect={() => {}}>
-            <Button
-              disabled={disabled}
-              size={"iconSm"}
-              variant={"ghost"}
-              onClick={() => {}}
-            >
+          <EmojiPopover onEmojiSelect={onEmojiSelect}>
+            <Button disabled={disabled} size={"iconSm"} variant={"ghost"}>
               <Smile className="size-4" />
             </Button>
           </EmojiPopover>
