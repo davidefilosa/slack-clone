@@ -7,6 +7,7 @@ type RequestType = {
   iamge?: Id<"_storage">;
   workspaceId: Id<"workspaces">;
   channelId: Id<"channels">;
+  convesationId?: Id<"conversations">;
   memberId?: Id<"members">;
   parentMessagaId?: Id<"messages">;
   updatedAt?: Date;
