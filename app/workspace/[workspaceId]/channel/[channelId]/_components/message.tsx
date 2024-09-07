@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { format, isToday, isYesterday } from "date-fns";
 import dynamic from "next/dynamic";
+import { Thumbnail } from "./thumbnail";
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 
 interface MessageProps {
@@ -66,6 +67,7 @@ export const Message = ({
           </Hint>
           <div className="flex flex-col w-full">
             <Renderer value={body} />
+            <Thumbnail url={image} />
             {updatedAt ? (
               <span className="text-xs text-muted-foreground">(edited)</span>
             ) : null}
@@ -100,6 +102,7 @@ export const Message = ({
             </span>
           </div>
           <Renderer value={body} />
+          <Thumbnail url={image} />
           {updatedAt ? (
             <span className="text-xs text-muted-foreground">(edited)</span>
           ) : null}
