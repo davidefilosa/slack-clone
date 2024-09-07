@@ -106,7 +106,6 @@ export const create = mutation({
       channelId: args.channelId,
       parentMessagaId: args.parentMessagaId,
       conversationId: _conversationId,
-      updatedAt: Date.now(),
     });
 
     return data;
@@ -158,7 +157,7 @@ export const get = query({
             const member = await populateMember(ctx, message.memberId);
             const user = member ? await populateUser(ctx, member.userId) : null;
             if (!member || !user) {
-              return null;
+              throw new Error("Unauthorized");
             }
 
             const reactions = await populateReaction(ctx, message._id);
@@ -211,10 +210,7 @@ export const get = query({
               threadTimestamp: thread.timestamp,
             };
           })
-          .filter(
-            (message): message is NonNullable<typeof message> =>
-              message !== null
-          )
+          .filter((message) => message !== null)
       ),
     };
   },
