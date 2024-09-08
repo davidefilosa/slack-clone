@@ -20,12 +20,14 @@ interface CancelMessageDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   messageId: Id<"messages">;
+  setIsRemoving: (state: boolean) => void;
 }
 
 export const CancelMessageDialog = ({
   open,
   setOpen,
   messageId,
+  setIsRemoving,
 }: CancelMessageDialogProps) => {
   const handleClose = () => {
     setOpen(false);
@@ -36,18 +38,23 @@ export const CancelMessageDialog = ({
 
   const handleSubmit = async () => {
     try {
+      setIsRemoving(true);
       const data = await mutate(
         { id: messageId },
         {
           onSuccess(data) {
             handleClose();
             toast.success("Messsage cancelled");
+            setIsRemoving(false);
           },
+
           onError() {
             console.log("error");
             toast.error("Failed to cancel message");
           },
-          onSettled() {},
+          onSettled() {
+            setIsRemoving(false);
+          },
         }
       );
     } catch (error) {}
