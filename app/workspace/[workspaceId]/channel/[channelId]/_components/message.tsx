@@ -11,6 +11,8 @@ import { Toolbar } from "./toolbar";
 import { useUpdateMessage } from "@/app/_features/messages/api/use-update-message";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { CancelMessageDialog } from "./cancel-message-dialog";
+import { useState } from "react";
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -60,7 +62,7 @@ export const Message = ({
   const formatFullTime = (date: Date) => {
     return `${isToday(date) ? "Today" : isYesterday(date) ? "Yesterday" : format(date, "MMM d, yyyy")} at ${format(date, "h:mm:ss a")}`;
   };
-
+  const [cancelOpen, setCancelOpen] = useState(false);
   const { mutate: updateMessage, isPending: isupdetingMessage } =
     useUpdateMessage();
   const isPending = isupdetingMessage;
@@ -89,6 +91,11 @@ export const Message = ({
           isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]"
         )}
       >
+        <CancelMessageDialog
+          messageId={id}
+          open={cancelOpen}
+          setOpen={setCancelOpen}
+        />
         {isEditing ? (
           <div className="w-full h-full">
             <Editor
@@ -123,7 +130,9 @@ export const Message = ({
               setEditingId(id);
             }}
             handleThread={() => {}}
-            handleDelete={() => {}}
+            handleDelete={() => {
+              setCancelOpen(true);
+            }}
             hideThreadButton={hideThreadButton}
             handleReaction={() => {}}
           />
@@ -138,6 +147,11 @@ export const Message = ({
         isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]"
       )}
     >
+      <CancelMessageDialog
+        messageId={id}
+        open={cancelOpen}
+        setOpen={setCancelOpen}
+      />
       <div className="flex items-start gap-2">
         <button>
           <Avatar className="rounded-md">
@@ -188,7 +202,9 @@ export const Message = ({
             setEditingId(id);
           }}
           handleThread={() => {}}
-          handleDelete={() => {}}
+          handleDelete={() => {
+            setCancelOpen(true);
+          }}
           hideThreadButton={hideThreadButton}
           handleReaction={() => {}}
         />
