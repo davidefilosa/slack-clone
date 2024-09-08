@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { CancelMessageDialog } from "./cancel-message-dialog";
 import { useState } from "react";
 import { useDeleteMessage } from "@/app/_features/messages/api/use-delete-message";
+import { useCreateReaction } from "@/app/_features/reactions/api/use-create-reaction";
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -67,9 +68,27 @@ export const Message = ({
   const [isRemoving, setIsRemoving] = useState(false);
   const { mutate: updateMessage, isPending: isupdetingMessage } =
     useUpdateMessage();
+
+  const { mutate: createReaction, isPending: isPendingReaction } =
+    useCreateReaction();
+
   const isPending = isupdetingMessage;
 
-  console.log(isRemoving);
+  const handleReaction = (value: string) => {
+    createReaction(
+      { messageId: id, value },
+      {
+        onSuccess: () => {
+          toast.success("Updated");
+          setEditingId(null);
+        },
+
+        onError: () => {
+          toast.error("Failed to update reaction");
+        },
+      }
+    );
+  };
 
   const handleUpdateMessage = ({ body }: { body: string }) => {
     updateMessage(
@@ -141,7 +160,7 @@ export const Message = ({
               setCancelOpen(true);
             }}
             hideThreadButton={hideThreadButton}
-            handleReaction={() => {}}
+            handleReaction={handleReaction}
           />
         )}
       </div>
@@ -216,7 +235,7 @@ export const Message = ({
             setCancelOpen(true);
           }}
           hideThreadButton={hideThreadButton}
-          handleReaction={() => {}}
+          handleReaction={handleReaction}
         />
       )}
     </div>
