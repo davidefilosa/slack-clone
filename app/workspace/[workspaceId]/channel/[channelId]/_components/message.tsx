@@ -15,6 +15,7 @@ import { CancelMessageDialog } from "./cancel-message-dialog";
 import { useState } from "react";
 import { useDeleteMessage } from "@/app/_features/messages/api/use-delete-message";
 import { useCreateReaction } from "@/app/_features/reactions/api/use-create-reaction";
+import { Reactions } from "./reactions";
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -66,25 +67,20 @@ export const Message = ({
   };
   const [cancelOpen, setCancelOpen] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  const { mutate: updateMessage, isPending: isupdetingMessage } =
+  const { mutate: updateMessage, isPending: isUpdetingMessage } =
     useUpdateMessage();
 
   const { mutate: createReaction, isPending: isPendingReaction } =
     useCreateReaction();
 
-  const isPending = isupdetingMessage;
+  const isPending = isUpdetingMessage || isPendingReaction;
 
   const handleReaction = (value: string) => {
     createReaction(
       { messageId: id, value },
       {
-        onSuccess: () => {
-          toast.success("Updated");
-          setEditingId(null);
-        },
-
         onError: () => {
-          toast.error("Failed to update reaction");
+          toast.error("Failed to set reaction");
         },
       }
     );
@@ -145,13 +141,14 @@ export const Message = ({
               {updatedAt ? (
                 <span className="text-xs text-muted-foreground">(edited)</span>
               ) : null}
+              <Reactions data={reactions} onChange={handleReaction} />
             </div>
           </div>
         )}
         {!isEditing && (
           <Toolbar
             isAuthor={isAuthor}
-            isPending={false}
+            isPending={isPending}
             handleEdit={() => {
               setEditingId(id);
             }}
@@ -220,13 +217,14 @@ export const Message = ({
             {updatedAt ? (
               <span className="text-xs text-muted-foreground">(edited)</span>
             ) : null}
+            <Reactions data={reactions} onChange={handleReaction} />
           </div>
         )}
       </div>
       {!isEditing && (
         <Toolbar
           isAuthor={isAuthor}
-          isPending={false}
+          isPending={isPending}
           handleEdit={() => {
             setEditingId(id);
           }}
