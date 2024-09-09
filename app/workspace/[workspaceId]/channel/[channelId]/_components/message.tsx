@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useDeleteMessage } from "@/app/_features/messages/api/use-delete-message";
 import { useCreateReaction } from "@/app/_features/reactions/api/use-create-reaction";
 import { Reactions } from "./reactions";
+import { usePanel } from "@/hooks/use-panel";
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -74,6 +75,8 @@ export const Message = ({
     useCreateReaction();
 
   const isPending = isUpdetingMessage || isPendingReaction;
+
+  const { onOpenMessage } = usePanel();
 
   const handleReaction = (value: string) => {
     createReaction(
@@ -152,7 +155,7 @@ export const Message = ({
             handleEdit={() => {
               setEditingId(id);
             }}
-            handleThread={() => {}}
+            handleThread={() => onOpenMessage(id)}
             handleDelete={() => {
               setCancelOpen(true);
             }}
@@ -228,7 +231,7 @@ export const Message = ({
           handleEdit={() => {
             setEditingId(id);
           }}
-          handleThread={() => {}}
+          handleThread={() => onOpenMessage(id)}
           handleDelete={() => {
             setCancelOpen(true);
           }}

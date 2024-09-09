@@ -9,7 +9,7 @@ type RequestType = {
   channelId: Id<"channels">;
   convesationId?: Id<"conversations">;
   memberId?: Id<"members">;
-  parentMessagaId?: Id<"messages">;
+  parentMessageId?: Id<"messages">;
   updatedAt?: Date;
 };
 type ResponseType = Id<"messages"> | null;
@@ -67,6 +67,7 @@ export const useCreateMessage = () => {
           throw error;
         }
         setState("error");
+        console.log(error);
       } finally {
         setState("settled");
         options?.onSettled?.();

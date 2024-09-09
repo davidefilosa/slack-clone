@@ -32,7 +32,7 @@ const schema = defineSchema({
     memberId: v.id("members"),
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
-    parentMessagaId: v.optional(v.id("messages")),
+    parentMessageId: v.optional(v.id("messages")),
     conversationId: v.optional(v.id("conversations")),
     updatedAt: v.optional(v.number()),
   })
@@ -42,10 +42,10 @@ const schema = defineSchema({
     .index("by_conversation_id", ["conversationId"])
     .index("by_channel_id_parent_message_id_conversation_id", [
       "channelId",
-      "parentMessagaId",
+      "parentMessageId",
       "conversationId",
     ])
-    .index("by_parent_message_id", ["parentMessagaId"]),
+    .index("by_parent_message_id", ["parentMessageId"]),
   reactions: defineTable({
     workspaceId: v.id("workspaces"),
     messageId: v.id("messages"),

@@ -24,7 +24,7 @@ const populateThread = async (ctx: QueryCtx, messageId: Id<"messages">) => {
   const messages = await ctx.db
     .query("messages")
     .withIndex("by_parent_message_id", (q) =>
-      q.eq("parentMessagaId", messageId)
+      q.eq("parentMessageId", messageId)
     )
     .collect();
   if (messages.length === 0) {
@@ -71,7 +71,7 @@ export const create = mutation({
     memberId: v.optional(v.id("members")),
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
-    parentMessagaId: v.optional(v.id("messages")),
+    parentMessageId: v.optional(v.id("messages")),
     conversationId: v.optional(v.id("conversations")),
   },
   handler: async (ctx, args) => {
@@ -88,14 +88,14 @@ export const create = mutation({
 
     let _conversationId = args.conversationId;
 
-    if (!args.conversationId && !args.channelId && args.parentMessagaId) {
-      const parentMessaga = await ctx.db.get(args.parentMessagaId);
+    if (!args.conversationId && !args.channelId && args.parentMessageId) {
+      const parentMessage = await ctx.db.get(args.parentMessageId);
 
-      if (!parentMessaga) {
+      if (!parentMessage) {
         throw new Error("Parent message not found");
       }
 
-      _conversationId = parentMessaga.conversationId;
+      _conversationId = parentMessage.conversationId;
     }
 
     const data = await ctx.db.insert("messages", {
@@ -104,7 +104,7 @@ export const create = mutation({
       memberId: member._id,
       workspaceId: args.workspaceId,
       channelId: args.channelId,
-      parentMessagaId: args.parentMessagaId,
+      parentMessageId: args.parentMessageId,
       conversationId: _conversationId,
     });
 
@@ -202,7 +202,7 @@ export const get = query({
       .withIndex("by_channel_id_parent_message_id_conversation_id", (q) =>
         q
           .eq("channelId", args.channelId)
-          .eq("parentMessagaId", args.parentMessageId)
+          .eq("parentMessageId", args.parentMessageId)
           .eq("conversationId", _conversationId)
       )
       .order("desc")
@@ -271,6 +271,85 @@ export const get = query({
           })
           .filter((message) => message !== null)
       ),
+    };
+  },
+});
+
+export const getMessageById = query({
+  args: {
+    messageId: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      return null;
+    }
+
+    const message = await ctx.db.get(args.messageId);
+
+    if (!message) {
+      return null;
+    }
+
+    const member = await populateMember(ctx, message.memberId);
+
+    if (!member) {
+      return null;
+    }
+
+    const currentMember = await getMember(ctx, message.workspaceId, userId);
+
+    if (!currentMember) {
+      return null;
+    }
+
+    const user = await populateUser(ctx, userId);
+
+    if (!user) {
+      return null;
+    }
+
+    const reactions = await populateReaction(ctx, args.messageId);
+
+    const reactionsWithCount = reactions.map((reaction) => {
+      return {
+        ...reaction,
+        count: reactions.filter((r) => r.value === reaction.value).length,
+      };
+    });
+
+    const dupedReactions = reactionsWithCount.reduce(
+      (acc, reaction) => {
+        const existingReaction = acc.find((r) => r.value === reaction.value);
+        if (existingReaction) {
+          existingReaction.memberIds = Array.from(
+            new Set([...existingReaction.memberIds, reaction.memberId])
+          );
+        } else {
+          acc.push({ ...reaction, memberIds: [reaction.memberId] });
+        }
+
+        return acc;
+      },
+      [] as (Doc<"reactions"> & {
+        count: number;
+        memberIds: Id<"members">[];
+      })[]
+    );
+
+    const reactionWithoutMemberIdProperty = dupedReactions.map(
+      ({ memberId, ...rest }) => rest
+    );
+
+    return {
+      ...message,
+      image: message.image
+        ? await ctx.storage.getUrl(message.image)
+        : undefined,
+      member,
+      user,
+      reactions: reactionWithoutMemberIdProperty,
     };
   },
 });

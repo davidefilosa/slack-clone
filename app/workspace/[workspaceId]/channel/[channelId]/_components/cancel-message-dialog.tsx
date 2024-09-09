@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Id } from "@/convex/_generated/dataModel";
+import { usePanel } from "@/hooks/use-panel";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -33,6 +34,8 @@ export const CancelMessageDialog = ({
     setOpen(false);
   };
 
+  const { onClose, parentMessageId } = usePanel();
+
   const { mutate, data, isError, isSettled, isSuccess, isPending, error } =
     useDeleteMessage();
 
@@ -45,6 +48,9 @@ export const CancelMessageDialog = ({
           onSuccess(data) {
             handleClose();
             toast.success("Messsage cancelled");
+            if (parentMessageId === messageId) {
+              onClose();
+            }
             setIsRemoving(false);
           },
 
