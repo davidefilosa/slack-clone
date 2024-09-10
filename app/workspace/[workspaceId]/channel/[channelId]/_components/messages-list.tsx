@@ -97,6 +97,7 @@ export const MessagesList = ({
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}
                 threadTimestamp={message.threadTimestamp}
+                threadName={message.threadName}
                 isEditing={editingId === message._id}
                 setEditingId={setEditingId}
                 isCompact={isCompact}
@@ -136,7 +137,7 @@ export const MessagesList = ({
       {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
       )}
-      {variant === "conversation" && memberName && memberImage && (
+      {variant === "conversation" && (
         <ConversationHero name={memberName} image={memberImage} />
       )}
     </div>

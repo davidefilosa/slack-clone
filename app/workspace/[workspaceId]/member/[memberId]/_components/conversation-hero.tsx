@@ -3,10 +3,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ConversationHeroProps {
-  name: string;
-  image: string;
+  name?: string;
+  image?: string;
 }
-export const ConversationHero = ({ name, image }: ConversationHeroProps) => {
+export const ConversationHero = ({
+  name = "member",
+  image,
+}: ConversationHeroProps) => {
   return (
     <div className="mt-[88px] mx-5 mb-4">
       <div className="flex items-center gap-x-1 mb-2">

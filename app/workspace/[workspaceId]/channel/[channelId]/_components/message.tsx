@@ -17,6 +17,7 @@ import { useDeleteMessage } from "@/app/_features/messages/api/use-delete-messag
 import { useCreateReaction } from "@/app/_features/reactions/api/use-create-reaction";
 import { Reactions } from "./reactions";
 import { usePanel } from "@/hooks/use-panel";
+import { ThreadBar } from "./thread-bar";
 const Renderer = dynamic(() => import("./renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -38,6 +39,7 @@ interface MessageProps {
   threadCount?: number;
   threadImage?: string;
   threadTimestamp?: number;
+  threadName?: string;
   isEditing: boolean;
   setEditingId: (id: Id<"messages"> | null) => void;
   isCompact?: boolean;
@@ -62,6 +64,7 @@ export const Message = ({
   setEditingId,
   isCompact,
   hideThreadButton,
+  threadName,
 }: MessageProps) => {
   const formatFullTime = (date: Date) => {
     return `${isToday(date) ? "Today" : isYesterday(date) ? "Yesterday" : format(date, "MMM d, yyyy")} at ${format(date, "h:mm:ss a")}`;
@@ -145,6 +148,13 @@ export const Message = ({
                 <span className="text-xs text-muted-foreground">(edited)</span>
               ) : null}
               <Reactions data={reactions} onChange={handleReaction} />
+              <ThreadBar
+                count={threadCount}
+                image={threadImage}
+                timestampt={threadTimestamp}
+                onClick={() => onOpenMessage(id)}
+                name={threadName}
+              />
             </div>
           </div>
         )}
@@ -221,6 +231,13 @@ export const Message = ({
               <span className="text-xs text-muted-foreground">(edited)</span>
             ) : null}
             <Reactions data={reactions} onChange={handleReaction} />
+            <ThreadBar
+              count={threadCount}
+              image={threadImage}
+              timestampt={threadTimestamp}
+              onClick={() => onOpenMessage(id)}
+              name={threadName}
+            />
           </div>
         )}
       </div>
