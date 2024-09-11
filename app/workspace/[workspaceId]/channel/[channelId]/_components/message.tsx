@@ -79,7 +79,7 @@ export const Message = ({
 
   const isPending = isUpdetingMessage || isPendingReaction;
 
-  const { onOpenMessage } = usePanel();
+  const { onOpenMessage, onOpenProfile } = usePanel();
 
   const handleReaction = (value: string) => {
     createReaction(
@@ -192,7 +192,7 @@ export const Message = ({
         setIsRemoving={setIsRemoving}
       />
       <div className="flex items-start gap-2">
-        <button>
+        <button onClick={() => onOpenProfile(memberId)}>
           <Avatar className="rounded-md">
             <AvatarImage src={authorImage} className="rounded-md" />
             <AvatarFallback className="rounded-md bg-sky-500 text-white">
@@ -213,7 +213,10 @@ export const Message = ({
         ) : (
           <div className="flex flex-col w-full overflow-hidden">
             <div className="text-sm">
-              <button className="font-bold text-primary hover:underline">
+              <button
+                className="font-bold text-primary hover:underline"
+                onClick={() => onOpenProfile(memberId)}
+              >
                 {authorName}
               </button>
               <span>
